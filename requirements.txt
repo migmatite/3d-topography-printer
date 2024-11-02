@@ -1,0 +1,7 @@
+requests
+numpy
+scipy
+shapely
+pyvista
+folium
+geopandas
