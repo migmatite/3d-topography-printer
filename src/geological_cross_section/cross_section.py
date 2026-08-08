@@ -8,6 +8,12 @@ cross-sections that display aquifers, aquitards, water tables, and wells.
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
 import json
+from html import escape as html_escape
+
+
+def xml_escape(text: str) -> str:
+    """Escape special XML characters."""
+    return html_escape(text, quote=True)
 
 
 @dataclass
@@ -185,7 +191,7 @@ class GeologicalCrossSection:
             '  </marker>',
             '</defs>',
             f'<rect width="{width}" height="{height}" fill="#f8f9fa"/>',
-            f'<text x="{width/2}" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#333">{self.title}</text>',
+            f'<text x="{width/2}" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#333">{xml_escape(self.title)}</text>',
         ]
         
         for layer in reversed(self.layers):
@@ -240,7 +246,7 @@ class GeologicalCrossSection:
             
             svg_parts.append(
                 f'<text x="{wx}" y="{wy_top-10}" text-anchor="middle" '
-                f'font-size="12" fill="#333">{well.name}</text>'
+                f'font-size="12" fill="#333">{xml_escape(well.name)}</text>'
             )
         
         svg_parts.append(
@@ -289,7 +295,7 @@ class GeologicalCrossSection:
             ly = legend_y + 20 + i * 25
             fill = f"url(#{layer.pattern})" if layer.pattern != "solid" else layer.color
             svg_parts.append(f'<rect x="{legend_x}" y="{ly}" width="20" height="15" fill="{fill}" stroke="#333" stroke-width="1"/>')
-            svg_parts.append(f'<text x="{legend_x+30}" y="{ly+12}" font-size="11" fill="#333">{layer.name}</text>')
+            svg_parts.append(f'<text x="{legend_x+30}" y="{ly+12}" font-size="11" fill="#333">{xml_escape(layer.name)}</text>')
         
         wt_y = legend_y + 20 + len(self.layers) * 25
         svg_parts.append(f'<line x1="{legend_x}" y1="{wt_y+7}" x2="{legend_x+20}" y2="{wt_y+7}" stroke="#0077be" stroke-width="3" stroke-dasharray="5,3"/>')
@@ -308,7 +314,7 @@ class GeologicalCrossSection:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{self.title}</title>
+    <title>{html_escape(self.title)}</title>
     <style>
         * {{
             margin: 0;
@@ -408,7 +414,7 @@ class GeologicalCrossSection:
 </head>
 <body>
     <div class="container">
-        <h1>🌍 {self.title}</h1>
+        <h1>🌍 {html_escape(self.title)}</h1>
         
         <div class="card">
             <div class="svg-container">
@@ -450,8 +456,8 @@ class GeologicalCrossSection:
         <div class="layer-item">
             <div class="layer-color" style="background-color: {layer.color};"></div>
             <div class="layer-info">
-                <div class="layer-name">{layer.name}{aquifer_badge}</div>
-                <div class="layer-type">{layer.description or layer.pattern.title()}</div>
+                <div class="layer-name">{html_escape(layer.name)}{aquifer_badge}</div>
+                <div class="layer-type">{html_escape(layer.description or layer.pattern.title())}</div>
             </div>
         </div>'''
     
@@ -464,8 +470,8 @@ class GeologicalCrossSection:
         return f'''
         <div class="well-item">
             <div class="well-info">
-                <div class="well-name">{well.name}</div>
-                <div class="well-type">{well.well_type.title()} Well | {details}</div>
+                <div class="well-name">{html_escape(well.name)}</div>
+                <div class="well-type">{html_escape(well.well_type.title())} Well | {details}</div>
             </div>
         </div>'''
 
