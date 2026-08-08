@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geological Cross-Section: Groundwater System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a5276 0%, #2e86ab 50%, #1a5276 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+        .main-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .svg-container {
+            background: linear-gradient(180deg, #e8f4f8 0%, #f5f5f5 100%);
+            padding: 30px;
+            position: relative;
+        }
+        .svg-container svg {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .control-btn.primary {
+            background: #2e86ab;
+            color: white;
+        }
+        .control-btn.primary:hover {
+            background: #1a5276;
+            transform: translateY(-2px);
+        }
+        .control-btn.secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+        .control-btn.secondary:hover {
+            background: #dee2e6;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 0;
+        }
+        .info-section {
+            padding: 25px;
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        .info-section:last-child {
+            border-right: none;
+        }
+        .info-section h3 {
+            color: #1a5276;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2e86ab;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .layer-list {
+            list-style: none;
+        }
+        .layer-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .layer-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        .layer-swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 15px;
+            border: 2px solid rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .layer-swatch.pattern-gravel {
+            background: linear-gradient(45deg, #d4a574 25%, #b8956e 25%, #b8956e 50%, #d4a574 50%, #d4a574 75%, #c9a882 75%);
+            background-size: 10px 10px;
+        }
+        .layer-swatch.pattern-sand {
+            background: #f4d03f;
+        }
+        .layer-swatch.pattern-clay {
+            background: repeating-linear-gradient(0deg, #8b7355, #8b7355 3px, #6b5344 3px, #6b5344 4px);
+        }
+        .layer-swatch.pattern-limestone {
+            background: repeating-linear-gradient(90deg, #d3d3d3, #d3d3d3 10px, #c0c0c0 10px, #c0c0c0 11px);
+        }
+        .layer-swatch.pattern-shale {
+            background: repeating-linear-gradient(0deg, #4a4a4a, #4a4a4a 2px, #3a3a3a 2px, #3a3a3a 3px);
+        }
+        .layer-details {
+            flex: 1;
+        }
+        .layer-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .layer-meta {
+            font-size: 13px;
+            color: #666;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .badge.aquifer {
+            background: #0077be;
+            color: white;
+        }
+        .badge.aquitard {
+            background: #8b7355;
+            color: white;
+        }
+        .well-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+        .well-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .well-name {
+            font-weight: 600;
+            color: #333;
+        }
+        .well-type {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 15px;
+            background: #2e86ab;
+            color: white;
+        }
+        .well-type.production {
+            background: #e74c3c;
+        }
+        .well-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .stat {
+            font-size: 13px;
+            color: #555;
+        }
+        .stat-label {
+            color: #888;
+        }
+        .stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+        .parameter-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .parameter-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .parameter-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a5276;
+        }
+        .parameter-unit {
+            font-size: 14px;
+            color: #888;
+            margin-left: 5px;
+        }
+        footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            padding: 30px;
+        }
+        footer a {
+            color: white;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+            max-width: 250px;
+        }
+        
+        /* Animation for water flow */
+        @keyframes flowAnimation {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -20; }
+        }
+        .flow-arrow {
+            animation: flowAnimation 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌊 Groundwater Cross-Section</h1>
+            <p class="subtitle">Alluvial Valley Aquifer System - Interactive Visualization</p>
+        </header>
+        
+        <div class="main-card">
+            <div class="controls">
+                <button class="control-btn primary" onclick="toggleWaterTable()">💧 Toggle Water Table</button>
+                <button class="control-btn primary" onclick="toggleFlowArrows()">➡️ Toggle Flow Arrows</button>
+                <button class="control-btn secondary" onclick="downloadSVG()">📥 Download SVG</button>
+                <button class="control-btn secondary" onclick="printSection()">🖨️ Print</button>
+            </div>
+            
+            <div class="svg-container">
+                <svg id="cross-section" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+                    <defs>
+                        <!-- Patterns for geological materials -->
+                        <pattern id="gravel" patternUnits="userSpaceOnUse" width="20" height="20">
+                            <rect width="20" height="20" fill="#d4a574"/>
+                            <circle cx="5" cy="5" r="3" fill="#b8956e" opacity="0.8"/>
+                            <circle cx="15" cy="12" r="2.5" fill="#c9a882" opacity="0.8"/>
+                            <circle cx="8" cy="16" r="2" fill="#bfa078" opacity="0.8"/>
+                            <circle cx="17" cy="4" r="1.5" fill="#a68b5b" opacity="0.8"/>
+                        </pattern>
+                        
+                        <pattern id="sand" patternUnits="userSpaceOnUse" width="8" height="8">
+                            <rect width="8" height="8" fill="#f4d03f"/>
+                            <circle cx="2" cy="2" r="0.8" fill="#d4b82f" opacity="0.6"/>
+                            <circle cx="6" cy="5" r="0.6" fill="#d4b82f" opacity="0.6"/>
+                            <circle cx="4" cy="7" r="0.7" fill="#d4b82f" opacity="0.6"/>
+                        </pattern>
+                        
+                        <pattern id="clay" patternUnits="userSpaceOnUse" width="30" height="12">
+                            <rect width="30" height="12" fill="#8b7355"/>
+                            <line x1="0" y1="4" x2="30" y2="4" stroke="#6b5344" stroke-width="1.5"/>
+                            <line x1="0" y1="8" x2="30" y2="8" stroke="#6b5344" stroke-width="1"/>
+                        </pattern>
+                        
+                        <pattern id="limestone" patternUnits="userSpaceOnUse" width="40" height="25">
+                            <rect width="40" height="25" fill="#d3d3d3"/>
+                            <rect x="1" y="1" width="18" height="11" fill="#c0c0c0" stroke="#a0a0a0" stroke-width="0.5"/>
+                            <rect x="21" y="1" width="18" height="11" fill="#c8c8c8" stroke="#a0a0a0" stroke-width="0.5"/>
+                            <rect x="10" y="14" width="18" height="10" fill="#c4c4c4" stroke="#a0a0a0" stroke-width="0.5"/>
+                        </pattern>
+                        
+                        <pattern id="shale" patternUnits="userSpaceOnUse" width="30" height="10">
+                            <rect width="30" height="10" fill="#4a4a4a"/>
+                            <line x1="0" y1="3" x2="30" y2="3" stroke="#3a3a3a" stroke-width="1.5"/>
+                            <line x1="0" y1="7" x2="30" y2="7" stroke="#3a3a3a" stroke-width="1"/>
+                        </pattern>
+                        
+                        <pattern id="topsoil" patternUnits="userSpaceOnUse" width="15" height="15">
+                            <rect width="15" height="15" fill="#8B4513"/>
+                            <circle cx="3" cy="3" r="1" fill="#654321" opacity="0.5"/>
+                            <circle cx="10" cy="8" r="1.5" fill="#5D4037" opacity="0.5"/>
+                            <circle cx="7" cy="13" r="1" fill="#6D4C41" opacity="0.5"/>
+                        </pattern>
+                        
+                        <!-- Gradient for water table -->
+                        <linearGradient id="waterGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#0077be;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#00a8e8;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0077be;stop-opacity:1" />
+                        </linearGradient>
+                        
+                        <!-- Arrow marker -->
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#0066cc"/>
+                        </marker>
+                        
+                        <!-- Well casing pattern -->
+                        <pattern id="wellScreen" patternUnits="userSpaceOnUse" width="8" height="4">
+                            <rect width="8" height="4" fill="#444"/>
+                            <line x1="0" y1="2" x2="8" y2="2" stroke="#666" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    
+                    <!-- Background -->
+                    <rect width="1200" height="600" fill="#f0f4f8"/>
+                    
+                    <!-- Sky/atmosphere above ground -->
+                    <rect x="80" y="50" width="1040" height="80" fill="url(#skyGradient)" opacity="0.3"/>
+                    
+                    <!-- Title -->
+                    <text x="600" y="35" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a5276">
+                        Groundwater Cross-Section: Alluvial Valley Aquifer System
+                    </text>
+                    
+                    <!-- Geological Layers (from bottom to top for proper layering) -->
+                    
+                    <!-- Shale (Bedrock) -->
+                    <polygon id="layer-shale" class="geo-layer" data-name="Shale Bedrock"
+                        points="80,520 180,521 280,523 380,527 480,530 580,531 680,529 780,525 880,521 980,519 1080,518 1120,518 1120,560 80,560"
+                        fill="url(#shale)" stroke="#333" stroke-width="1"/>
+                    
+                    <!-- Limestone (Confined Aquifer) -->
+                    <polygon id="layer-limestone" class="geo-layer" data-name="Limestone Aquifer"
+                        points="80,420 180,421 280,423 380,427 480,430 580,431 680,429 780,425 880,421 980,419 1080,418 1120,418 1120,520 1080,518 980,519 880,521 780,525 680,529 580,531 480,530 380,527 280,523 180,521 80,520"
+                        fill="url(#limestone)" stroke="#333" stroke-width="1"/>
+                    
+                    <!-- Clay (Aquitard) -->
+                    <polygon id="layer-clay" class="geo-layer" data-name="Clay Aquitard"
+                        points="80,320 180,321 280,323 380,327 480,330 580,331 680,329 780,325 880,321 980,319 1080,318 1120,318 1120,420 1080,418 980,419 880,421 780,425 680,429 580,431 480,430 380,427 280,423 180,421 80,420"
+                        fill="url(#clay)" stroke="#333" stroke-width="1"/>
+                    
+                    <!-- Sand & Gravel (Unconfined Aquifer) -->
+                    <polygon id="layer-gravel" class="geo-layer" data-name="Sand &amp; Gravel Aquifer"
+                        points="80,165 180,170 280,180 380,200 480,215 580,220 680,215 780,195 880,175 980,165 1080,160 1120,158 1120,320 1080,318 980,319 880,321 780,325 680,329 580,331 480,330 380,327 280,323 180,321 80,320"
+                        fill="url(#gravel)" stroke="#333" stroke-width="1"/>
+                    
+                    <!-- Topsoil -->
+                    <polygon id="layer-topsoil" class="geo-layer" data-name="Topsoil"
+                        points="80,130 180,138 280,150 380,175 480,190 580,197 680,192 780,170 880,148 980,135 1080,128 1120,125 1120,158 1080,160 980,165 880,175 780,195 680,215 580,220 480,215 380,200 280,180 180,170 80,165"
+                        fill="url(#topsoil)" stroke="#333" stroke-width="1"/>
+                    
+                    <!-- Surface features (grass line) -->
+                    <path d="M80,130 Q130,128 180,138 T280,150 T380,175 T480,190 T580,197 T680,192 T780,170 T880,148 T980,135 T1080,128 L1120,125"
+                        fill="none" stroke="#228B22" stroke-width="4" stroke-linecap="round"/>
+                    
+                    <!-- Trees/vegetation indicators -->
+                    <g class="vegetation">
+                        <path d="M100,125 L100,110 M95,115 L100,110 L105,115" stroke="#228B22" stroke-width="2" fill="none"/>
+                        <path d="M150,130 L150,112 M143,120 L150,112 L157,120" stroke="#228B22" stroke-width="2" fill="none"/>
+                        <path d="M950,132 L950,115 M944,122 L950,115 L956,122" stroke="#228B22" stroke-width="2" fill="none"/>
+                        <path d="M1050,125 L1050,108 M1043,115 L1050,108 L1057,115" stroke="#228B22" stroke-width="2" fill="none"/>
+                    </g>
+                    
+                    <!-- River/Stream at surface -->
+                    <ellipse cx="580" cy="197" rx="60" ry="8" fill="#4da6ff" opacity="0.7"/>
+                    <text x="580" y="185" text-anchor="middle" font-size="11" fill="#0066cc" font-style="italic">River</text>
+                    
+                    <!-- Water Table -->
+                    <g id="water-table-group">
+                        <path id="water-table" 
+                            d="M80,180 Q180,182 280,190 T380,210 T480,225 T580,230 T680,225 T780,205 T880,185 T980,175 T1080,170"
+                            fill="none" stroke="url(#waterGradient)" stroke-width="4" stroke-dasharray="15,8"
+                            stroke-linecap="round"/>
+                        <text x="95" y="175" font-size="11" fill="#0077be" font-weight="bold">WT</text>
+                    </g>
+                    
+                    <!-- Potentiometric Surface (for confined aquifer) -->
+                    <g id="potentiometric-surface" opacity="0.6">
+                        <path d="M80,250 Q280,255 480,265 T680,260 T880,250 T1080,245"
+                            fill="none" stroke="#9b59b6" stroke-width="2" stroke-dasharray="5,5"/>
+                        <text x="1085" y="242" font-size="10" fill="#9b59b6">Potentiometric</text>
+                    </g>
+                    
+                    <!-- Groundwater Flow Arrows -->
+                    <g id="flow-arrows-group" class="flow-arrows">
+                        <line x1="180" y1="220" x2="280" y2="225" stroke="#0066cc" stroke-width="2.5" marker-end="url(#arrowhead)" class="flow-arrow"/>
+                        <line x1="350" y1="230" x2="450" y2="235" stroke="#0066cc" stroke-width="2.5" marker-end="url(#arrowhead)" class="flow-arrow"/>
+                        <line x1="700" y1="225" x2="800" y2="215" stroke="#0066cc" stroke-width="2.5" marker-end="url(#arrowhead)" class="flow-arrow"/>
+                        <line x1="870" y1="200" x2="970" y2="190" stroke="#0066cc" stroke-width="2.5" marker-end="url(#arrowhead)" class="flow-arrow"/>
+                        
+                        <!-- Vertical recharge arrows -->
+                        <line x1="200" y1="160" x2="200" y2="200" stroke="#00aa00" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+                        <line x1="900" y1="155" x2="900" y2="195" stroke="#00aa00" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+                        <text x="200" y="155" text-anchor="middle" font-size="9" fill="#00aa00">Recharge</text>
+                        <text x="900" y="150" text-anchor="middle" font-size="9" fill="#00aa00">Recharge</text>
+                        
+                        <!-- River interaction -->
+                        <line x1="580" y1="205" x2="580" y2="235" stroke="#0066cc" stroke-width="2" marker-end="url(#arrowhead)" opacity="0.7"/>
+                    </g>
+                    
+                    <!-- Wells -->
+                    <g id="wells-group">
+                        <!-- Monitoring Well MW-1 -->
+                        <g class="well" data-name="MW-1" data-type="monitoring">
+                            <rect x="277" y="150" width="6" height="180" fill="#555" stroke="#333" stroke-width="1"/>
+                            <rect x="275" y="280" width="10" height="40" fill="none" stroke="#333" stroke-width="2" stroke-dasharray="4,2"/>
+                            <line x1="273" y1="190" x2="287" y2="190" stroke="#0077be" stroke-width="3"/>
+                            <circle cx="280" cy="143" r="8" fill="#2e86ab" stroke="#1a5276" stroke-width="2"/>
+                            <text x="280" y="133" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a5276">MW-1</text>
+                        </g>
+                        
+                        <!-- Production Well PW-1 -->
+                        <g class="well" data-name="PW-1" data-type="production">
+                            <rect x="577" y="197" width="8" height="260" fill="#444" stroke="#333" stroke-width="1"/>
+                            <rect x="574" y="400" width="14" height="50" fill="url(#wellScreen)" stroke="#333" stroke-width="2"/>
+                            <line x1="571" y1="280" x2="591" y2="280" stroke="#0077be" stroke-width="3"/>
+                            <circle cx="581" cy="189" r="10" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                            <text x="581" y="177" text-anchor="middle" font-size="12" font-weight="bold" fill="#c0392b">PW-1</text>
+                            <!-- Pump symbol -->
+                            <path d="M591,195 L605,195 L605,205 L591,205 Z" fill="#666" stroke="#333"/>
+                            <path d="M605,200 L620,200" stroke="#333" stroke-width="2"/>
+                            <text x="625" y="203" font-size="9" fill="#666">500 m³/d</text>
+                        </g>
+                        
+                        <!-- Monitoring Well MW-2 -->
+                        <g class="well" data-name="MW-2" data-type="monitoring">
+                            <rect x="877" y="148" width="6" height="175" fill="#555" stroke="#333" stroke-width="1"/>
+                            <rect x="875" y="275" width="10" height="40" fill="none" stroke="#333" stroke-width="2" stroke-dasharray="4,2"/>
+                            <line x1="873" y1="185" x2="887" y2="185" stroke="#0077be" stroke-width="3"/>
+                            <circle cx="880" cy="140" r="8" fill="#2e86ab" stroke="#1a5276" stroke-width="2"/>
+                            <text x="880" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#1a5276">MW-2</text>
+                        </g>
+                    </g>
+                    
+                    <!-- Cone of Depression around PW-1 -->
+                    <path id="cone-depression" 
+                        d="M480,230 Q530,260 580,280 Q630,260 680,230"
+                        fill="none" stroke="#e74c3c" stroke-width="2" stroke-dasharray="8,4" opacity="0.6"/>
+                    <text x="580" y="295" text-anchor="middle" font-size="10" fill="#e74c3c" font-style="italic">Cone of Depression</text>
+                    
+                    <!-- Axes -->
+                    <line x1="80" y1="560" x2="1120" y2="560" stroke="#333" stroke-width="2"/>
+                    <line x1="80" y1="80" x2="80" y2="560" stroke="#333" stroke-width="2"/>
+                    
+                    <!-- Y-axis labels (Elevation) -->
+                    <text x="40" y="90" font-size="11" fill="#333" text-anchor="middle">100m</text>
+                    <line x1="75" y1="90" x2="80" y2="90" stroke="#333"/>
+                    
+                    <text x="40" y="185" font-size="11" fill="#333" text-anchor="middle">80m</text>
+                    <line x1="75" y1="185" x2="80" y2="185" stroke="#333"/>
+                    
+                    <text x="40" y="280" font-size="11" fill="#333" text-anchor="middle">60m</text>
+                    <line x1="75" y1="280" x2="80" y2="280" stroke="#333"/>
+                    
+                    <text x="40" y="375" font-size="11" fill="#333" text-anchor="middle">40m</text>
+                    <line x1="75" y1="375" x2="80" y2="375" stroke="#333"/>
+                    
+                    <text x="40" y="470" font-size="11" fill="#333" text-anchor="middle">20m</text>
+                    <line x1="75" y1="470" x2="80" y2="470" stroke="#333"/>
+                    
+                    <text x="40" y="560" font-size="11" fill="#333" text-anchor="middle">0m</text>
+                    
+                    <!-- X-axis labels (Distance) -->
+                    <text x="80" y="580" font-size="11" fill="#333" text-anchor="middle">0</text>
+                    <text x="288" y="580" font-size="11" fill="#333" text-anchor="middle">200m</text>
+                    <text x="496" y="580" font-size="11" fill="#333" text-anchor="middle">400m</text>
+                    <text x="704" y="580" font-size="11" fill="#333" text-anchor="middle">600m</text>
+                    <text x="912" y="580" font-size="11" fill="#333" text-anchor="middle">800m</text>
+                    <text x="1120" y="580" font-size="11" fill="#333" text-anchor="middle">1000m</text>
+                    
+                    <!-- Axis titles -->
+                    <text x="600" y="598" font-size="14" fill="#333" text-anchor="middle" font-weight="bold">Distance (m)</text>
+                    <text x="20" y="325" font-size="14" fill="#333" text-anchor="middle" font-weight="bold" transform="rotate(-90, 20, 325)">Elevation (m)</text>
+                    
+                    <!-- Legend -->
+                    <g id="legend" transform="translate(920, 70)">
+                        <rect x="0" y="0" width="185" height="240" fill="white" stroke="#333" rx="8" opacity="0.95"/>
+                        <text x="92" y="22" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Legend</text>
+                        <line x1="10" y1="30" x2="175" y2="30" stroke="#ddd"/>
+                        
+                        <!-- Layer items -->
+                        <rect x="15" y="40" width="25" height="18" fill="url(#topsoil)" stroke="#333"/>
+                        <text x="50" y="54" font-size="11" fill="#333">Topsoil</text>
+                        
+                        <rect x="15" y="65" width="25" height="18" fill="url(#gravel)" stroke="#333"/>
+                        <text x="50" y="79" font-size="11" fill="#333">Sand &amp; Gravel</text>
+                        <text x="160" y="79" font-size="9" fill="#0077be" font-weight="bold">Aquifer</text>
+                        
+                        <rect x="15" y="90" width="25" height="18" fill="url(#clay)" stroke="#333"/>
+                        <text x="50" y="104" font-size="11" fill="#333">Clay</text>
+                        <text x="145" y="104" font-size="9" fill="#8b7355" font-weight="bold">Aquitard</text>
+                        
+                        <rect x="15" y="115" width="25" height="18" fill="url(#limestone)" stroke="#333"/>
+                        <text x="50" y="129" font-size="11" fill="#333">Limestone</text>
+                        <text x="160" y="129" font-size="9" fill="#0077be" font-weight="bold">Aquifer</text>
+                        
+                        <rect x="15" y="140" width="25" height="18" fill="url(#shale)" stroke="#333"/>
+                        <text x="50" y="154" font-size="11" fill="#333">Shale Bedrock</text>
+                        
+                        <line x1="10" y1="165" x2="175" y2="165" stroke="#ddd"/>
+                        
+                        <!-- Symbols -->
+                        <line x1="15" y1="180" x2="40" y2="180" stroke="#0077be" stroke-width="3" stroke-dasharray="8,4"/>
+                        <text x="50" y="184" font-size="11" fill="#333">Water Table</text>
+                        
+                        <line x1="15" y1="200" x2="40" y2="200" stroke="#0066cc" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="50" y="204" font-size="11" fill="#333">Groundwater Flow</text>
+                        
+                        <circle cx="27" cy="225" r="6" fill="#2e86ab" stroke="#1a5276" stroke-width="1.5"/>
+                        <text x="50" y="229" font-size="11" fill="#333">Monitoring Well</text>
+                    </g>
+                    
+                    <!-- Vertical Exaggeration note -->
+                    <text x="80" y="65" font-size="11" fill="#666" font-style="italic">Vertical Exaggeration: 5x</text>
+                    
+                    <!-- Scale bar -->
+                    <g transform="translate(80, 540)">
+                        <rect x="0" y="0" width="104" height="8" fill="#333"/>
+                        <rect x="104" y="0" width="104" height="8" fill="white" stroke="#333"/>
+                        <text x="52" y="25" font-size="10" text-anchor="middle">100m</text>
+                        <text x="156" y="25" font-size="10" text-anchor="middle">200m</text>
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-section">
+                    <h3>📊 Geological Units</h3>
+                    <ul class="layer-list">
+                        <li class="layer-item">
+                            <div class="layer-swatch" style="background: #8B4513;"></div>
+                            <div class="layer-details">
+                                <div class="layer-name">Topsoil</div>
+                                <div class="layer-meta">Organic-rich surface soil • 2-5m thick</div>
+                            </div>
+                        </li>
+                        <li class="layer-item">
+                            <div class="layer-swatch pattern-gravel"></div>
+                            <div class="layer-details">
+                                <div class="layer-name">Sand & Gravel <span class="badge aquifer">Aquifer</span></div>
+                                <div class="layer-meta">Unconfined aquifer • K = 50 m/d • 15-25m thick</div>
+                            </div>
+                        </li>
+                        <li class="layer-item">
+                            <div class="layer-swatch pattern-clay"></div>
+                            <div class="layer-details">
+                                <div class="layer-name">Clay <span class="badge aquitard">Aquitard</span></div>
+                                <div class="layer-meta">Confining layer • K = 0.001 m/d • 8-12m thick</div>
+                            </div>
+                        </li>
+                        <li class="layer-item">
+                            <div class="layer-swatch pattern-limestone"></div>
+                            <div class="layer-details">
+                                <div class="layer-name">Limestone <span class="badge aquifer">Aquifer</span></div>
+                                <div class="layer-meta">Confined aquifer • K = 15 m/d • 18-22m thick</div>
+                            </div>
+                        </li>
+                        <li class="layer-item">
+                            <div class="layer-swatch pattern-shale"></div>
+                            <div class="layer-details">
+                                <div class="layer-name">Shale Bedrock</div>
+                                <div class="layer-meta">Impermeable basement • Aquitard base</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="info-section">
+                    <h3>🔧 Wells</h3>
+                    <div class="well-card">
+                        <div class="well-header">
+                            <span class="well-name">MW-1</span>
+                            <span class="well-type">Monitoring</span>
+                        </div>
+                        <div class="well-stats">
+                            <div class="stat"><span class="stat-label">Depth:</span> <span class="stat-value">35m</span></div>
+                            <div class="stat"><span class="stat-label">Screen:</span> <span class="stat-value">25-35m</span></div>
+                            <div class="stat"><span class="stat-label">Water Level:</span> <span class="stat-value">8m bgs</span></div>
+                            <div class="stat"><span class="stat-label">Screened in:</span> <span class="stat-value">Sand/Gravel</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="well-card">
+                        <div class="well-header">
+                            <span class="well-name">PW-1</span>
+                            <span class="well-type production">Production</span>
+                        </div>
+                        <div class="well-stats">
+                            <div class="stat"><span class="stat-label">Depth:</span> <span class="stat-value">55m</span></div>
+                            <div class="stat"><span class="stat-label">Screen:</span> <span class="stat-value">45-55m</span></div>
+                            <div class="stat"><span class="stat-label">Pumping:</span> <span class="stat-value">500 m³/d</span></div>
+                            <div class="stat"><span class="stat-label">Screened in:</span> <span class="stat-value">Limestone</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="well-card">
+                        <div class="well-header">
+                            <span class="well-name">MW-2</span>
+                            <span class="well-type">Monitoring</span>
+                        </div>
+                        <div class="well-stats">
+                            <div class="stat"><span class="stat-label">Depth:</span> <span class="stat-value">32m</span></div>
+                            <div class="stat"><span class="stat-label">Screen:</span> <span class="stat-value">22-32m</span></div>
+                            <div class="stat"><span class="stat-label">Water Level:</span> <span class="stat-value">6m bgs</span></div>
+                            <div class="stat"><span class="stat-label">Screened in:</span> <span class="stat-value">Sand/Gravel</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3>📈 Hydrogeological Parameters</h3>
+                    <div class="parameter-card">
+                        <div class="parameter-title">Hydraulic Gradient (Unconfined)</div>
+                        <div class="parameter-value">0.005<span class="parameter-unit">m/m</span></div>
+                    </div>
+                    <div class="parameter-card">
+                        <div class="parameter-title">Estimated Recharge Rate</div>
+                        <div class="parameter-value">150<span class="parameter-unit">mm/yr</span></div>
+                    </div>
+                    <div class="parameter-card">
+                        <div class="parameter-title">Aquifer Transmissivity</div>
+                        <div class="parameter-value">1,000<span class="parameter-unit">m²/d</span></div>
+                    </div>
+                    <div class="parameter-card">
+                        <div class="parameter-title">Storage Coefficient</div>
+                        <div class="parameter-value">0.15<span class="parameter-unit">(unconfined)</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Geological Cross-Section Visualization Tool | Generated for Groundwater Analysis</p>
+            <p style="margin-top: 10px; font-size: 12px;">K = Hydraulic Conductivity | bgs = below ground surface</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Toggle water table visibility
+        let waterTableVisible = true;
+        function toggleWaterTable() {
+            const wt = document.getElementById('water-table-group');
+            waterTableVisible = !waterTableVisible;
+            wt.style.opacity = waterTableVisible ? 1 : 0;
+        }
+        
+        // Toggle flow arrows
+        let flowArrowsVisible = true;
+        function toggleFlowArrows() {
+            const arrows = document.getElementById('flow-arrows-group');
+            flowArrowsVisible = !flowArrowsVisible;
+            arrows.style.opacity = flowArrowsVisible ? 1 : 0;
+        }
+        
+        // Download SVG
+        function downloadSVG() {
+            const svg = document.getElementById('cross-section');
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([svgData], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'groundwater_cross_section.svg';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Print section
+        function printSection() {
+            window.print();
+        }
+        
+        // Add hover effects to layers
+        document.querySelectorAll('.geo-layer').forEach(layer => {
+            layer.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.8';
+                this.style.filter = 'brightness(1.1)';
+            });
+            layer.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+                this.style.filter = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
