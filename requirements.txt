@@ -5,3 +5,4 @@ shapely
 pyvista
 folium
 geopandas
+pytest>=7.0.0
