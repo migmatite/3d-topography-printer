@@ -1,0 +1,256 @@
+{
+  "title": "Groundwater Cross-Section: Alluvial Valley Aquifer System",
+  "mesh_type": "structured",
+  "dimensions": {
+    "n_columns": 50,
+    "n_rows": 25,
+    "n_cells": 1250,
+    "n_active_cells": 1096
+  },
+  "bounds": {
+    "x_min": 0,
+    "x_max": 1000,
+    "z_min": 24,
+    "z_max": 105
+  },
+  "layer_stats": {
+    "Topsoil": {
+      "cell_count": 46,
+      "total_area": 2914.9843260188054,
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0
+    },
+    "Inactive": {
+      "cell_count": 154,
+      "total_area": 10045.015673981208,
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0
+    },
+    "Sand & Gravel (Unconfined Aquifer)": {
+      "cell_count": 272,
+      "total_area": 17804.76489028218,
+      "is_aquifer": true,
+      "hydraulic_conductivity": 50.0
+    },
+    "Clay (Aquitard)": {
+      "cell_count": 159,
+      "total_area": 10065.329153605016,
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.001
+    },
+    "Limestone (Confined Aquifer)": {
+      "cell_count": 312,
+      "total_area": 20201.755485893478,
+      "is_aquifer": true,
+      "hydraulic_conductivity": 15.0
+    },
+    "Shale (Bedrock)": {
+      "cell_count": 307,
+      "total_area": 19968.150470219516,
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0
+    }
+  },
+  "sample_cells": [
+    {
+      "id": 0,
+      "row": 0,
+      "col": 0,
+      "x_center": 12.539184952978058,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 0,
+        "x_max": 25.078369905956116,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.078369905956116,
+      "height": 3.239999999999995,
+      "area": 81.25391849529768,
+      "layer_name": "Topsoil",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": true
+    },
+    {
+      "id": 1,
+      "row": 0,
+      "col": 1,
+      "x_center": 37.61755485893417,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 25.078369905956116,
+        "x_max": 50.15673981191223,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.078369905956116,
+      "height": 3.239999999999995,
+      "area": 81.25391849529768,
+      "layer_name": "Topsoil",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "row": 0,
+      "col": 2,
+      "x_center": 62.695924764890286,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 50.15673981191223,
+        "x_max": 75.23510971786834,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.07836990595611,
+      "height": 3.239999999999995,
+      "area": 81.25391849529767,
+      "layer_name": "Topsoil",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": true
+    },
+    {
+      "id": 3,
+      "row": 0,
+      "col": 3,
+      "x_center": 87.7742946708464,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 75.23510971786834,
+        "x_max": 100.31347962382446,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.078369905956123,
+      "height": 3.239999999999995,
+      "area": 81.25391849529771,
+      "layer_name": "Topsoil",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": true
+    },
+    {
+      "id": 4,
+      "row": 0,
+      "col": 4,
+      "x_center": 112.85266457680252,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 100.31347962382446,
+        "x_max": 125.39184952978059,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.078369905956123,
+      "height": 3.239999999999995,
+      "area": 81.25391849529771,
+      "layer_name": "Topsoil",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": true
+    },
+    {
+      "id": 5,
+      "row": 0,
+      "col": 5,
+      "x_center": 137.93103448275866,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 125.39184952978059,
+        "x_max": 150.4702194357367,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.078369905956123,
+      "height": 3.239999999999995,
+      "area": 81.25391849529771,
+      "layer_name": "Topsoil",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": true
+    },
+    {
+      "id": 6,
+      "row": 0,
+      "col": 6,
+      "x_center": 163.00940438871476,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 150.4702194357367,
+        "x_max": 175.54858934169283,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.078369905956123,
+      "height": 3.239999999999995,
+      "area": 81.25391849529771,
+      "layer_name": "Inactive",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": false
+    },
+    {
+      "id": 7,
+      "row": 0,
+      "col": 7,
+      "x_center": 188.0877742946709,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 175.54858934169283,
+        "x_max": 200.62695924764895,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 25.078369905956123,
+      "height": 3.239999999999995,
+      "area": 81.25391849529771,
+      "layer_name": "Inactive",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": false
+    },
+    {
+      "id": 8,
+      "row": 0,
+      "col": 8,
+      "x_center": 206.89655172413796,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 200.62695924764895,
+        "x_max": 213.166144200627,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 12.539184952978047,
+      "height": 3.239999999999995,
+      "area": 40.626959247648806,
+      "layer_name": "Inactive",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": false
+    },
+    {
+      "id": 9,
+      "row": 0,
+      "col": 9,
+      "x_center": 216.30094043887152,
+      "z_center": 103.38,
+      "bounds": {
+        "x_min": 213.166144200627,
+        "x_max": 219.43573667711604,
+        "z_min": 101.76,
+        "z_max": 105
+      },
+      "width": 6.269592476489038,
+      "height": 3.239999999999995,
+      "area": 20.31347962382445,
+      "layer_name": "Inactive",
+      "is_aquifer": false,
+      "hydraulic_conductivity": 0.0,
+      "is_active": false
+    }
+  ]
+}
